@@ -44,3 +44,7 @@ GeoReport is a web-based map application that allows users to report incidents w
 
 6.  **Open your browser:**
     Navigate to `http://localhost:3000` to use the application.
+
+## Deployment
+
+To deploy this application, you will need to set the `DATABASE_URL` environment variable to your cloud-hosted MongoDB connection string (e.g., from MongoDB Atlas). Most hosting platforms provide a way to set environment variables in their dashboard.
