@@ -8,7 +8,8 @@ const app = express();
 const port = 3000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost/georeport', {
+const dbUrl = process.env.DATABASE_URL || 'mongodb://localhost/georeport';
+mongoose.connect(dbUrl, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
