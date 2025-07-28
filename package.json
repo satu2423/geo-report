@@ -1,0 +1,14 @@
+{
+  "name": "georeport",
+  "version": "1.0.0",
+  "description": "A map application for reporting incidents.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^8.16.5",
+    "multer": "^2.0.2"
+  }
+}
