@@ -9,10 +9,7 @@ const port = 3000;
 
 // Connect to MongoDB
 const dbUrl = process.env.DATABASE_URL || 'mongodb://localhost/georeport';
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
+mongoose.connect(dbUrl);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
