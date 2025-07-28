@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');
-const Incident = require(path.join(__dirname, '..', 'models', 'incident'));
+const Incident = require('./models/incident');
 
 const app = express();
 const port = 3000;
@@ -30,8 +30,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-app.use(express.static('./'));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static(path.join(__dirname, '..')));
+app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 app.get('/incidents', async (req, res) => {
   try {
