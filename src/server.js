@@ -1,21 +1,10 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const mongoose = require('mongoose');
-const Incident = require('./incident');
+const fs = require('fs');
 
 const app = express();
 const port = 3000;
-
-// Connect to MongoDB
-const dbUrl = process.env.DATABASE_URL || 'mongodb://localhost/georeport';
-console.log('Connecting to database at:', dbUrl);
-mongoose.connect(dbUrl);
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('Connected to MongoDB');
-});
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -31,32 +20,51 @@ const upload = multer({ storage: storage });
 app.use(express.static(path.join(__dirname, '..')));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
-app.get('/incidents', async (req, res) => {
-  try {
-    const incidents = await Incident.find();
-    res.json(incidents);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+app.get('/incidents', (req, res) => {
+  fs.readFile(path.join(__dirname, '..', 'incidents.json'), 'utf8', (err, data) => {
+    if (err) {
+      if (err.code === 'ENOENT') {
+        return res.json([]); // If file doesn't exist, return empty array
+      }
+      console.error(err);
+      return res.status(500).json({ message: 'Error reading incidents file.' });
+    }
+    res.json(JSON.parse(data));
+  });
 });
 
-app.post('/report', upload.single('media'), async (req, res) => {
+app.post('/report', upload.single('media'), (req, res) => {
   const { description, lat, lng } = req.body;
-  const mediaPath = req.file ? req.file.path : null;
+  const mediaPath = req.file ? req.file.path.replace(path.join(__dirname, '..'), '').replace(/\\/g, '/') : null;
 
-  const incident = new Incident({
+
+  const newIncident = {
     description,
     lat,
     lng,
-    mediaPath
-  });
+    mediaPath,
+    timestamp: new Date().toISOString()
+  };
 
-  try {
-    const newIncident = await incident.save();
-    res.status(201).json(newIncident);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  const incidentsFilePath = path.join(__dirname, '..', 'incidents.json');
+
+  fs.readFile(incidentsFilePath, 'utf8', (err, data) => {
+    let incidents = [];
+    if (!err && data) {
+      incidents = JSON.parse(data);
+    }
+
+    incidents.push(newIncident);
+
+    fs.writeFile(incidentsFilePath, JSON.stringify(incidents, null, 2), (err) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Error writing incidents file.' });
+      }
+
+      res.status(201).json({ message: 'Incident reported successfully!' });
+    });
+  });
 });
 
 app.listen(port, () => {
