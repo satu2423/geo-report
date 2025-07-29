@@ -2,9 +2,9 @@
   "name": "georeport",
   "version": "1.0.0",
   "description": "A map application for reporting incidents.",
-  "main": "src/server.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
