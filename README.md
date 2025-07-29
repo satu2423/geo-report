@@ -48,6 +48,10 @@ GeoReport is a web-based map application that allows users to report incidents w
 
 ## Deployment
 
-To deploy this application, you will need to set the `DATABASE_URL` environment variable to your cloud-hosted MongoDB connection string (e.g., from MongoDB Atlas). Most hosting platforms provide a way to set environment variables in their dashboard.
+When deploying to a platform like Render, use the following settings:
 
-When deploying to a platform like Render, make sure your "Start Command" is set to `node server.js` if the platform automatically runs from the `src` directory.
+*   **Root Directory:** `src`
+*   **Start Command:** `node server.js`
+*   **Environment Variable:**
+    *   **Key:** `DATABASE_URL`
+    *   **Value:** Your cloud-hosted MongoDB connection string (e.g., from MongoDB Atlas).
