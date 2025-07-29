@@ -9,6 +9,7 @@ const port = 3000;
 
 // Connect to MongoDB
 const dbUrl = process.env.DATABASE_URL || 'mongodb://localhost/georeport';
+console.log('Connecting to database at:', dbUrl);
 mongoose.connect(dbUrl);
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
