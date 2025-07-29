@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const mongoose = require('mongoose');
-const Incident = require('./models/incident');
+const Incident = require('./incident');
 
 const app = express();
 const port = 3000;

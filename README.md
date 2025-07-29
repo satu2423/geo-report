@@ -50,8 +50,8 @@ GeoReport is a web-based map application that allows users to report incidents w
 
 When deploying to a platform like Render, use the following settings:
 
-*   **Root Directory:** `src`
-*   **Start Command:** `node server.js`
+*   **Root Directory:** (leave blank or set to the project root)
+*   **Start Command:** `node src/server.js`
 *   **Environment Variable:**
     *   **Key:** `DATABASE_URL`
     *   **Value:** Your cloud-hosted MongoDB connection string (e.g., from MongoDB Atlas).
