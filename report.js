@@ -1,3 +1,11 @@
+const quotes = [
+    "The greatness of a community is most accurately measured by the compassionate actions of its members. – Coretta Scott King",
+    "We cannot live only for ourselves. A thousand fibers connect us with our fellow men. – Herman Melville",
+    "Alone, we can do so little; together, we can do so much. – Helen Keller",
+    "The best way to find yourself is to lose yourself in the service of others. – Mahatma Gandhi",
+    "Act as if what you do makes a difference. It does. – William James"
+];
+
 const form = document.getElementById('incident-form');
 const confirmationDiv = document.getElementById('confirmation');
 
@@ -17,11 +25,13 @@ form.addEventListener('submit', async (e) => {
         body: formData
     });
 
-    const result = await response.json();
     if (response.ok) {
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        document.getElementById('quote').textContent = randomQuote;
         form.style.display = 'none';
         confirmationDiv.style.display = 'block';
     } else {
+        const result = await response.json();
         alert(result.message);
     }
 });
