@@ -1,13 +1,13 @@
 # GeoReport
 
-GeoReport is a web-based map application that allows users to report incidents with descriptions and media (photos/videos). The application is built with Node.js, Express, and Leaflet.js.
+GeoReport is a web-based map application that allows users to report incidents with descriptions and media (photos/videos). The application is built with Node.js, Express, Leaflet.js, and SQLite.
 
 ## Features
 
 *   Display an interactive map.
 *   Get user's current location.
 *   Report incidents with a description and media upload.
-*   Incidents are stored in a local `incidents.json` file.
+*   Incidents are stored in a local SQLite database file (`database.db`).
 *   Reported incidents are displayed as markers on the map.
 *   Separate, animated page for incident reporting.
 
@@ -37,6 +37,7 @@ GeoReport is a web-based map application that allows users to report incidents w
     ```bash
     npm start
     ```
+    This command will also automatically create and initialize the `database.db` file if it doesn't exist.
 
 5.  **Open your browser:**
     Navigate to `http://localhost:3000` to use the application.
@@ -46,6 +47,7 @@ GeoReport is a web-based map application that allows users to report incidents w
 When deploying to a platform like Render, use the following settings:
 
 *   **Root Directory:** (leave blank or set to the project root)
-*   **Start Command:** `node src/server.js`
+*   **Start Command:** `npm start`
+*   **Persistent Storage:** You will need to configure a persistent disk on your hosting platform to store the `database.db` and `uploads` directory. On Render, you can do this by adding a "Disk" in your service settings with the mount path set to the project root.
 
-That's it! Since this version of the application does not have a database, there are no environment variables to set.
+That's it! Since this version of the application uses a self-contained database, there are no external services or environment variables to configure.

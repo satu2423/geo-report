@@ -1,10 +1,13 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const port = 3000;
+
+const dbPath = path.resolve(__dirname, '..', 'database.db');
+const db = new sqlite3.Database(dbPath);
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -21,49 +24,38 @@ app.use(express.static(path.join(__dirname, '..')));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 app.get('/incidents', (req, res) => {
-  fs.readFile(path.join(__dirname, '..', 'incidents.json'), 'utf8', (err, data) => {
+  db.all('SELECT * FROM incidents', [], (err, rows) => {
     if (err) {
-      if (err.code === 'ENOENT') {
-        return res.json([]); // If file doesn't exist, return empty array
-      }
       console.error(err);
-      return res.status(500).json({ message: 'Error reading incidents file.' });
+      return res.status(500).json({ message: 'Error reading incidents from database.' });
     }
-    res.json(JSON.parse(data));
+    res.json(rows);
   });
 });
 
 app.post('/report', upload.single('media'), (req, res) => {
   const { description, lat, lng } = req.body;
-  const mediaPath = req.file ? req.file.path.replace(path.join(__dirname, '..'), '').replace(/\\/g, '/') : null;
-
+  const mediaPath = req.file ? '/uploads/' + req.file.filename : null;
 
   const newIncident = {
     description,
     lat,
     lng,
     mediaPath,
-    timestamp: new Date().toISOString()
+    createdAt: new Date().toISOString()
   };
 
-  const incidentsFilePath = path.join(__dirname, '..', 'incidents.json');
+  const sql = `
+    INSERT INTO incidents (description, lat, lng, mediaPath, createdAt)
+    VALUES (?, ?, ?, ?, ?)
+  `;
 
-  fs.readFile(incidentsFilePath, 'utf8', (err, data) => {
-    let incidents = [];
-    if (!err && data) {
-      incidents = JSON.parse(data);
+  db.run(sql, [newIncident.description, newIncident.lat, newIncident.lng, newIncident.mediaPath, newIncident.createdAt], function(err) {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: 'Error writing incident to database.' });
     }
-
-    incidents.push(newIncident);
-
-    fs.writeFile(incidentsFilePath, JSON.stringify(incidents, null, 2), (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Error writing incidents file.' });
-      }
-
-      res.status(201).json({ message: 'Incident reported successfully!' });
-    });
+    res.status(201).json({ message: 'Incident reported successfully!' });
   });
 });
 

@@ -4,10 +4,11 @@
   "description": "A map application for reporting incidents.",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js"
+    "start": "node src/database.js && node src/server.js"
   },
   "dependencies": {
     "express": "^4.17.1",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "sqlite3": "^5.1.7"
   }
 }
